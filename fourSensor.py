@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation 
 
 #linking to arduino
-port = '/dev/cu.usbserial-10'  #arduino port
+port = '/dev/cu.usbserial-110'  #arduino port
 baudRate = 9600 #number of signals to recieve per second
 resistance = 20000.0 #fixed resistor resistance
 
@@ -18,10 +18,11 @@ ser = serial.Serial(port, baudRate) #open serial port
 #allowing time for arduino to reset after port opened to prevent errors/ wrong data
 time.sleep(2)
 
+
 #initializing global variables
 times = []
-rawR = [] #raw data inputted from arduino
-smoothedR = [] #smoothed data
+rawR = [[], [], [], []] #raw data inputted from arduino
+smoothedR = [[], [], [], []] #smoothed data
 startTime = time.time()
 
 #function to generate smoothed data
@@ -32,67 +33,61 @@ def movingAverage(data, avgNum):
         return sum(data) / len(data)
     else:
         return sum(data[-avgNum:]) / avgNum
-
-
+    
+    
 #function to update the graph
 #frame: int passed in by FuncAnimation that increments each time the animation
 #updates.
 def update(frame):
-    global startTime
-
     #ser.in_waiting gets the number of bytes in input buffer
     #if we get an input from the arduino board
     if ser.in_waiting:
         try:
-            #ser.readline() gives binary code, so we decode using unicode 8bytes
             line = ser.readline().decode('utf-8').strip()
-            resistance = float(line)
+            parts = line.split(",")
+            if len(parts) != 4:
+                return  #if data doesn't contain 4 readings then return
+
+            #changing readings from strings to floats + storing in list
+            readings = [float(p) for p in parts]
             elapsed = time.time() - startTime
-
             times.append(elapsed)
-            rawR.append(resistance)
 
-            smooth = movingAverage(rawR, movingAvgNum)
-            smoothedR.append(smooth)
+            #looping through 4 readings of resistance
+            for i in range(4):
+                rawR[i].append(readings[i])
+                smooth = movingAverage(rawR[i], movingAvgNum)
+                smoothedR[i].append(smooth)
+                axs[i].clear()
+                axs[i].plot(times, smoothedR[i], label=f'A{i}', color=f'C{i}')
+                axs[i].set_ylabel("Resistance (ohms)")
+                axs[i].legend(loc='upper right')
 
-            #clearing axes to resize according to time elapsed + data variance
-            ax.clear()
-            #uncomment for raw data
-            #ax.plot(times, rawR, label='Raw Resistance', alpha=0.4)
-            ax.plot(times, smoothedR, label='Smoothed Resistance', linewidth=2)
+            axs[3].set_xlabel("Time (s)")
+            fig.suptitle("Smoothed Conductive Foam Resistance Over Time from 4 Foam Sensors")
 
-            ax.set_xlabel("Time (s)")
-            ax.set_ylabel("Resistance (ohms)")
-            ax.set_title("Smoothed Conductive Foam Resistance Over Time")
-            ax.legend(loc="upper right")
-
-        except ValueError: #error handling for non-numeric arduino inputs
+        except ValueError:
             pass
-        
 
 #setting up axes and plot
-fig, ax = plt.subplots()
+fig, axs = plt.subplots()
 #refresh the plotted graph every 100 milliseconds using the update function
 ani = FuncAnimation(fig, update, interval=100)
 plt.tight_layout() #for layout 
 
 #called when program is exiting
 def on_close(event):
-    print("Saving final graph as PDF...")
-    #finalizing data to be saved in pdf
-    ax.clear()
-    ax.plot(times, smoothedR, label='Smoothed Resistance', color='blue')
-    ax.set_xlabel("Time (s)")
-    ax.set_ylabel("Resistance (ohms)")
-    ax.set_title("Final Smoothed Resistance Plot")
-    ax.legend()
+    print("Saving final plot to 4ResistanceGraph.pdf...")
+    for i in range(4):
+        axs[i].clear()
+        axs[i].plot(times, smoothedR[i], label=f'Foam {i+1}', color=f'C{i}')
+        axs[i].set_ylabel("Resistance (ohms)")
+        axs[i].legend(loc='upper right')
+    axs[3].set_xlabel("Time (s)")
+    fig.suptitle("Final Smoothed Resistance Plot")
+    fig.savefig("4ResistanceGraph.pdf")
+    ser.close()
+    print("Saved: 4ResistanceGraph.pdf")
 
-    fig.savefig("ResistancePlot.pdf")
-    print("Saved: ResistancePlot.pdf")
-    ser.close() #closing serial port connection
-
-#calls on_close when the matplotlib window is closed
 fig.canvas.mpl_connect('close_event', on_close)
-
-#opens matplotlib window
 plt.show()

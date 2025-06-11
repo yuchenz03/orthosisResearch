@@ -6,4 +6,13 @@ We will be collecting data via the use of conductive foam attached to the inner 
 
 # Files
 ### singleSensory.py
-When an arduino board is attached to the laptop, this program reads the resistance from a single piece of conductive foam and outputs it into a graph. When the program is exited/ the plot window is closed, the final graph is saved as a PDF named "ResistancePlot.pdf". 
+When an arduino board is attached to the laptop, this program reads the resistance from a single piece of conductive foam and outputs it into a graph. When the program is exited/ the plot window is closed, the final graph is saved as a PDF named "ResistancePlot.pdf". The data is smoothed using a moving average of 10 data values when there is a sufficient amount of data points.
+
+### singleSensory.ino
+Code to be run in the Arduino IDE after connecting the arduino board to format the data from one sensor properly. Returns the resistance of the foam in ohms, where each new reading is printed on a new line.
+
+### fourSensory.py
+When an arduino board is attached to the laptop, this program reads the resistance from four piece of conductive foam and outputs it into a graph. When the program is exited/ the plot window is closed, the final graph is saved as a PDF named "4ResistanceGraph.pdf". Each data point is smoothed using a moving average of 10 data values when there is a sufficient amount of data points.
+
+### fourSensory.ino
+Code to be run in the Arduino IDE after connecting the arduino board to format the data from four sensors properly. Returns the resistance of the foam in ohms, where the readings of four sensors are outputted on a single line in the order and format {A0},{A1},{A2},{A3} and next four readings are printed on a new line.
