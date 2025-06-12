@@ -45,7 +45,8 @@ def update(frame):
     if ser.in_waiting:
         try:
             #ser.readline() gives binary code, so we decode using unicode 8bytes
-            line = ser.readline().decode('utf-8').strip()
+            #edited to use ser.read to reduce latency between data and graph output
+            line = ser.read(ser.in_waiting).decode('utf-8').strip()
             resistance = float(line)
             elapsed = time.time() - startTime
 

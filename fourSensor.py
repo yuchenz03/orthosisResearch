@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation 
 
 #linking to arduino
-port = '/dev/cu.usbserial-110'  #arduino port
+port = '/dev/cu.usbserial-10'  #arduino port
 baudRate = 9600 #number of signals to recieve per second
 resistance = 20000.0 #fixed resistor resistance
 
@@ -43,7 +43,7 @@ def update(frame):
     #if we get an input from the arduino board
     if ser.in_waiting:
         try:
-            line = ser.readline().decode('utf-8').strip()
+            line = ser.read(ser.in_waiting).decode('utf-8').strip()
             parts = line.split(",")
             if len(parts) != 4:
                 return  #if data doesn't contain 4 readings then return
@@ -70,9 +70,9 @@ def update(frame):
             pass
 
 #setting up axes and plot
-fig, axs = plt.subplots()
-#refresh the plotted graph every 100 milliseconds using the update function
-ani = FuncAnimation(fig, update, interval=100)
+fig, axs = plt.subplots(4, 1, figsize=(8, 10), sharex=True)
+#refresh the plotted graph every 50 milliseconds using the update function
+ani = FuncAnimation(fig, update, interval=50)
 plt.tight_layout() #for layout 
 
 #called when program is exiting
@@ -80,7 +80,7 @@ def on_close(event):
     print("Saving final plot to 4ResistanceGraph.pdf...")
     for i in range(4):
         axs[i].clear()
-        axs[i].plot(times, smoothedR[i], label=f'Foam {i+1}', color=f'C{i}')
+        axs[i].plot(times, smoothedR[i], label=f'C{i}', color=f'C{i}')
         axs[i].set_ylabel("Resistance (ohms)")
         axs[i].legend(loc='upper right')
     axs[3].set_xlabel("Time (s)")
