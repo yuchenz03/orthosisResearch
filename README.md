@@ -16,3 +16,8 @@ When an arduino board is attached to the laptop, this program reads the resistan
 
 ### fourSensory.ino
 Code to be run in the Arduino IDE after connecting the arduino board to format the data from four sensors properly. Returns the resistance of the foam in ohms, where the readings of four sensors are outputted on a single line in the order and format {A0},{A1},{A2},{A3} and next four readings are printed on a new line.
+
+### datacollection.py
+Code that takes in n seconds of serial data input then appends collected data into the datak.csv files, where k is the number of data points used to store the state switching. Values of k to be determined. Data is appended in the following format: 
+numpoints,switchtype,sensor1data1,sensor1data2,...,sensor1datak,sensor2data1,...,sensor2datak,sensor3data1,...,sensor3datak,sensor4data1,sensor4datak
+Each time the code is run, one new data point is generated (one new line in the csv file).
