@@ -1,5 +1,3 @@
 # ignore all graphs generated when committing
 4ResistanceGraph.pdf
 ResistancePlot.pdf
-
-# ignore all collected data (for now at least)
