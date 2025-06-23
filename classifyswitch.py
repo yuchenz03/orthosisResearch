@@ -6,7 +6,7 @@ numpoints = 160 # varies with which dataset we use
 
 # setting number of columns this way gets rid of issue where number of data points
 # differed in some readings
-columns = [i for i in range(613)] 
+columns = [i for i in range(613)] # varies with dataset
 data = pd.read_csv(datapath, header=None, usecols=columns) 
 
 # Note: since the data doesn't have headers, just know that the formatting
@@ -21,7 +21,6 @@ train_X, val_X, train_y, val_y = train_test_split(features, target,random_state 
 
 
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import mean_absolute_error
 
 # using random_state=1 to ensure reproducability for now
 forest_model = RandomForestClassifier(random_state=1)
@@ -35,3 +34,6 @@ comparison = pd.DataFrame({
     'Correct': correct
 })
 print(comparison.to_string(index=False))
+
+numcorrect = correct.count(True)
+print(f"{numcorrect} correct out of {len(preds)}")

@@ -21,3 +21,6 @@ Code to be run in the Arduino IDE after connecting the arduino board to format t
 Code that takes in n seconds of serial data input then appends collected data into the datak.csv files, where k is the number of data points used to store the state switching. Values of k to be determined. Data is appended in the following format: 
 switchtype,sensor1data1,sensor1data2,...,sensor1datak,sensor2data1,...,sensor2datak,sensor3data1,...,sensor3datak,sensor4data1,sensor4datak
 Each time the code is run, one new data point is generated (one new line in the csv file).
+
+### classifyswitch.py
+Uses data in some datak.csv (where k is a number) and uses it to train a random forest classifier. It then prints out the true and predicted values of each data point, and whether the prediction was correct or not. 
