@@ -16,6 +16,9 @@ dataWindows = [60,70,80,90,100,110,120,130,140,150,160]
 
 # looping func to generate data
 def recieveData():
+    global times, rawR
+    times = []
+    rawR = [[], [], [], []]
     print("Starting data collection...")
     
     # ser.in_waiting gets the number of bytes in input buffer
@@ -27,12 +30,12 @@ def recieveData():
     # time.sleep(15)
     # print("Calibrating sensors... (2/4)")
     # time.sleep(15)
-    # print("Calibrating sensors... (3/4)")
-    # time.sleep(10)
-    # print("Switch in 5 seconds")
-    # time.sleep(1)
-    # print("4 seconds")
-    # time.sleep(1)
+    print("Calibrating sensors... ")
+    time.sleep(10)
+    print("Switch in 5 seconds")
+    time.sleep(1)
+    print("4 seconds")
+    time.sleep(1)
     print("3 seconds")
     time.sleep(1)
     # checking that the amount of elapsed time is accurate
@@ -79,18 +82,30 @@ def recieveData():
     
 
 def main():
-    # for i in range(10):
-        recieveData()
-        switchtype = input("0: stiff->flexible, 1: flexible->stiff, 2: none >> ")
-        
-        for i in range(len(dataWindows)):
-            finalData = [switchtype] #1D array of data points
-            for j in range(numSensors):
-                # 20 data points per second, take following n seconds
-                finalData += rawR[j][:dataWindows[i]]
-            filename = 'data'+str(dataWindows[i])+'.csv'
-            with open(filename, 'a', newline='') as csvfile:
-                writer = csv.writer(csvfile)
-                writer.writerow(finalData)
+    again = True
+    while again == True:
+        typeslist = [0,1,2,0,2,1]
+        for i in range(len(typeslist)):
+            if typeslist[i] == 0:
+                print("stiff to flexible")
+            elif typeslist[i] == 1:
+                print("flexible to stiff")
+            elif typeslist[i] == 2:
+                print("none")
+            recieveData()
+            # switchtype = input("0: stiff->flexible, 1: flexible->stiff, 2: none >> ")
+            switchtype = typeslist[i]
+            for i in range(len(dataWindows)):
+                finalData = [switchtype] #1D array of data points
+                for j in range(numSensors):
+                    # 20 data points per second, take following n seconds
+                    finalData += rawR[j][:dataWindows[i]]
+                filename = 'prototype2data/data'+str(dataWindows[i])+'.csv'
+                with open(filename, 'a', newline='') as csvfile:
+                    writer = csv.writer(csvfile)
+                    writer.writerow(finalData)
+        againin = input("again? y or enter for yes >>")
+        if againin != "y" and againin != "Y" and againin != "":
+            again = False
 
 main()

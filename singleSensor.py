@@ -69,12 +69,11 @@ def update(frame):
 
         except ValueError: #error handling for non-numeric arduino inputs
             pass
-        
-
+         
 #setting up axes and plot
 fig, ax = plt.subplots()
 #refresh the plotted graph every 100 milliseconds using the update function
-ani = FuncAnimation(fig, update, interval=100)
+ani = FuncAnimation(fig, update, interval=50)
 plt.tight_layout() #for layout 
 
 #called when program is exiting
