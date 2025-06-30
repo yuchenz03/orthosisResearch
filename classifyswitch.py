@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-datapath = "data/data160.csv" # varies with which dataset we use
+datapath = "prototype3data/data160.csv" # varies with which dataset we use
 numpoints = 160 # varies with which dataset we use
 
 # setting number of columns this way gets rid of issue where number of data points

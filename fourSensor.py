@@ -26,7 +26,7 @@ smoothedR = [[], [], [], []] #smoothed data
 startTime = time.time()
 
 #function to generate smoothed data
-#data: list of data points; 
+#dat a: list of data points; 
 #avgNum: number of data points to average from
 def movingAverage(data, avgNum):
     if len(data) < avgNum:

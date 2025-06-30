@@ -100,7 +100,7 @@ def main():
                 for j in range(numSensors):
                     # 20 data points per second, take following n seconds
                     finalData += rawR[j][:dataWindows[i]]
-                filename = 'prototype2data/data'+str(dataWindows[i])+'.csv'
+                filename = 'prototype3data/data'+str(dataWindows[i])+'.csv'
                 with open(filename, 'a', newline='') as csvfile:
                     writer = csv.writer(csvfile)
                     writer.writerow(finalData)
