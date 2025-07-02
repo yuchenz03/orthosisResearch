@@ -1,4 +1,3 @@
 # ignore all graphs generated when committing
 4ResistanceGraph.pdf
 ResistancePlot.pdf
-inspectdata.py

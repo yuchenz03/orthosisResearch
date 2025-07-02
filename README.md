@@ -4,6 +4,20 @@ This summer, I will be working in the Interactive Structures Lab at CMU's HCI In
 
 We will be collecting data via the use of conductive foam attached to the inner linings of the bistable orthosis brace. The two pieces of rehabilitation data we will be attempting to extract will be swelling of the joint and the amount of time the patient's brace is in either a flexible or stiff state.
 
+# Data Folders
+### prototype1data
+This folder contains data from the first prototype of the orthotic brace containing sensors. This prototype had tiny clips on two adjacent corners of each of the four conductive foam pieces that measure resistance. Overall, this method didn't work very well - due to the fragility of the design, the wires and clips kept breaking or snapping during the process of collecting data. Furthermore, after further testing the conductive foam, we found that the readings were more sensitive when larger clips were used and hence had a larger area of contact with the foam. 
+
+### prototype2data
+This folder contains data collected from the second prototype of the orthotic brace containing sensors. This prototype had two wires that "clipped" the sides of the foam to ensure a higher area of contact. 
+
+### prototype3data
+This folder contains data collected from the third prototype of the orthotic brace containing sensors. The only difference bewteen prototype 2 and 3 is that non-conductive tape was added on the surface of the conductive foams to reduce noise data from occuring due to the skin being a conductive material that touches the wires instead of the foam. 
+For the first 96 readings, I recorded the switches with minimal movement when not switching. For the next 96 values, I recorded switches where after switching, I continued applying pressure in the same direction of the switch in readings where we recorded switching for varying amounts of time. This mimics movements such as grasping a large object or switching states in order to pinch a small object. During readings where there were supposed to be no switches, I recorded data where I pressed hard surfaces for varying amounts of time without switching states. This mimics movement such as pressing buttons or typing. 
+
+### prototype3databasic
+The first 96 readings from prototype3data. Used for testing purposes.
+
 # Files
 ### singleSensory.py
 When an arduino board is attached to the laptop, this program reads the resistance from a single piece of conductive foam and outputs it into a graph. When the program is exited/ the plot window is closed, the final graph is saved as a PDF named "ResistancePlot.pdf". The data is smoothed using a moving average of 10 data values when there is a sufficient amount of data points.
@@ -20,7 +34,7 @@ Code to be run in the Arduino IDE after connecting the arduino board to format t
 ### datacollection.py
 Code that takes in n seconds of serial data input then appends collected data into the datak.csv files, where k is the number of data points used to store the state switching. Values of k to be determined. Data is appended in the following format: 
 switchtype,sensor1data1,sensor1data2,...,sensor1datak,sensor2data1,...,sensor2datak,sensor3data1,...,sensor3datak,sensor4data1,sensor4datak
-Each time the code is run, one new data point is generated (one new line in the csv file).
+Each time the code is run, one new data point is generated (one new line in the csv file). 
 
 ### classifyswitch.py
 Uses data in some datak.csv (where k is a number) and uses it to train a random forest classifier. It then prints out the true and predicted values of each data point, and whether the prediction was correct or not. 

@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-datapath = "prototype3data/data160.csv" # varies with which dataset we use
+datapath = "prototype3databasic/data160.csv" # varies with which dataset we use
 numpoints = 160 # varies with which dataset we use
 
 # setting number of columns this way gets rid of issue where number of data points
@@ -29,11 +29,15 @@ preds = forest_model.predict(val_X)
 
 correct = [(i == j) for i,j in zip(val_y.values,preds)]
 comparison = pd.DataFrame({
-    'True': val_y.values,
+    'Actual': val_y.values,
     'Predicted': preds,
     'Correct': correct
 })
 print(comparison.to_string(index=False))
 
+switchidentified = [(i == j) if i == 2 or j == 2 else True for i,j in zip(val_y.values,preds)]
 numcorrect = correct.count(True)
+nonevsswitches = switchidentified.count(True)
+numswitches = (val_y.values.tolist()).count(0) + (val_y.values.tolist()).count(1)
 print(f"{numcorrect} correct out of {len(preds)}")
+print(f"{nonevsswitches} correct out of {len(preds)} considering both switches to be equal")
