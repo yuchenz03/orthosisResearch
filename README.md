@@ -4,7 +4,7 @@ This summer, I will be working in the Interactive Structures Lab at CMU's HCI In
 
 We will be collecting data via the use of conductive foam attached to the inner linings of the bistable orthosis brace. The two pieces of rehabilitation data we will be attempting to extract will be swelling of the joint and the amount of time the patient's brace is in either a flexible or stiff state.
 
-# Data Folders
+## Data Folders
 ### prototype1data
 This folder contains data from the first prototype of the orthotic brace containing sensors. This prototype had tiny clips on two adjacent corners of each of the four conductive foam pieces that measure resistance. Overall, this method didn't work very well - due to the fragility of the design, the wires and clips kept breaking or snapping during the process of collecting data. Furthermore, after further testing the conductive foam, we found that the readings were more sensitive when larger clips were used and hence had a larger area of contact with the foam. 
 
