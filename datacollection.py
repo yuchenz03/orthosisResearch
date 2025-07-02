@@ -62,7 +62,7 @@ def recieveData():
                     
                     # handles the case where input 4's decimal place doesn't
                     # come in the same line as other values.
-                    if "." not in parts[3]: 
+                    if "." not in parts[3] or parts[3][-1] == ".": 
                         while not ser.in_waiting:
                             pass
                         decimalpoint = ser.read(ser.in_waiting).decode('utf-8').strip()
