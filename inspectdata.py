@@ -3,20 +3,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # change this depending on what file is being used
-filepath = "prototype3data/data120.csv"  
-k = 120 # number of readings per sensor
-
-delay = 50  # from the arduino code we have a 50ms delay between readings (used for plotting)
+filepath = "prototype3data/data120.csv"
+numpoints = 120  # number of readings per sensor
+delay = 50       # from Arduino, 50ms delay between readings (for plotting)
 numsensors = 4
 switchtypes_list = [0, 1, 2]
 
-lastntrialstoshow = 10  # number of most recent trials to keep for plotting 
-                        # note: this is n trials per subplot, so 10 indicates 
-                        # the last 90 trials will be plotted
+rowrangetoplot = (0,150)  # specify row range to plot (inclusive)
 
 df = pd.read_csv(filepath, header=None)
 switchtypes = df.iloc[:, 0].astype(int)
-data = df.iloc[:, 1:]  # data without switchtypes
+data = df.iloc[:, 1:]
 
 # configuring x-axis so that it shows seconds on the bottom line
 tickpos = list(range(1, 7))
@@ -25,27 +22,46 @@ ticklabels = [str(t) for t in tickpos]
 # plotting the 4 axes:
 fig, axes = plt.subplots(numsensors, len(switchtypes_list), figsize=(18, 12), sharex=True, sharey=False)
 
+# Function to normalize data per sensor
+def normalizedata(row, numpoints, numsensors):
+    normalizedrow = row.copy()
+    for sensor in range(numsensors):
+        start = sensor * numpoints
+        end = start + numpoints
+        sensorblock = row[start:end]
+        meanval = np.mean(sensorblock)
+        normalizedrow[start:end] = sensorblock - meanval
+    return normalizedrow
+
 for sensor in range(numsensors):
     for col, switchtype in enumerate(switchtypes_list):
         ax = axes[sensor, col]
 
-        mask = (switchtypes == switchtype)
+        # filter rows within specified range and switchtype
+        mask = (switchtypes == switchtype) & \
+               (df.index >= rowrangetoplot[0]) & \
+               (df.index <= rowrangetoplot[1])
         indices = df.index[mask].tolist()
 
-        # Keep only the last num_trials_to_keep rows with this switchtype
-        if len(indices) > lastntrialstoshow:
-            indices = indices[-lastntrialstoshow:]
+        # skip if no data in this range for this switchtype
+        if not indices:
+            ax.set_title(f"Sensor {sensor + 1} | Switchtype {switchtype} (No Data)")
+            continue
 
         rows = data.iloc[indices, :]
-        row_indices = indices
+        rowindices = indices
 
-        for groupidx, rowid in enumerate(row_indices):
-            startcol = sensor * k
-            endcol = startcol + k
-            if endcol > rows.shape[1]:
-                endcol = rows.shape[1]
-            readings = rows.iloc[groupidx, startcol:endcol].values.astype(float)
-            
+        for groupidx, rowid in enumerate(rowindices):
+            row = rows.iloc[groupidx, :].values.astype(float)
+            row = normalizedata(row, numpoints, numsensors)
+
+            startcol = sensor * numpoints
+            endcol = startcol + numpoints
+            if endcol > len(row):
+                endcol = len(row)
+
+            readings = row[startcol:endcol]
+
             # for x axis
             time = np.arange(0, len(readings) * delay, delay) / 1000
 
